@@ -2,6 +2,7 @@ package com.abadzheva.movies;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private MainViewModel viewModel;
     private RecyclerView recyclerViewMovies;
+    private ProgressBar progressBarLoading;
     private MoviesAdapter moviesAdapter;
 
     @Override
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         //----------------------- onCreate -----------------------
         recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
+        progressBarLoading = findViewById(R.id.progressBarLoading);
         moviesAdapter = new MoviesAdapter();
         recyclerViewMovies.setAdapter(moviesAdapter);
         recyclerViewMovies.setLayoutManager(new GridLayoutManager(this, 2));
@@ -46,6 +49,22 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, movies.toString());
             }
         });
-        viewModel.loadMovies();
+
+        moviesAdapter.setOnReachEndListener(new MoviesAdapter.OnReachEndListener() {
+            @Override
+            public void onReachEnd() {
+                viewModel.loadMovies();
+            }
+        });
+        viewModel.getIsLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    progressBarLoading.setVisibility(RecyclerView.VISIBLE);
+                } else {
+                    progressBarLoading.setVisibility(RecyclerView.GONE);
+                }
+            }
+        });
     }
 }
