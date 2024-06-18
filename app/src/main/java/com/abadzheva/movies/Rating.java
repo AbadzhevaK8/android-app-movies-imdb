@@ -2,7 +2,9 @@ package com.abadzheva.movies;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Rating {
+import java.io.Serializable;
+
+public class Rating implements Serializable {
 
     @SerializedName("imdb")
     private double imdb;
