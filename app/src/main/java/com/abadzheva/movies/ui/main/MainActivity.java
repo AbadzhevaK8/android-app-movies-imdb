@@ -1,4 +1,4 @@
-package com.abadzheva.movies;
+package com.abadzheva.movies.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,10 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.abadzheva.movies.ui.detail.MovieDetailActivity;
+import com.abadzheva.movies.R;
+import com.abadzheva.movies.data.model.movie.Movie;
 
 import java.util.List;
 

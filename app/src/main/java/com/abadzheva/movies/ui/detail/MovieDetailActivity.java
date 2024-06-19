@@ -1,7 +1,9 @@
-package com.abadzheva.movies;
+package com.abadzheva.movies.ui.detail;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -14,7 +16,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.abadzheva.movies.R;
+import com.abadzheva.movies.data.api.ApiFactory;
+import com.abadzheva.movies.data.model.movie.Movie;
+import com.abadzheva.movies.data.model.movie.MovieResponse;
+import com.abadzheva.movies.data.model.review.Review;
+import com.abadzheva.movies.data.model.review.ReviewResponse;
+import com.abadzheva.movies.data.model.trailer.Trailer;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -34,7 +44,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView textViewTitle;
     private TextView textViewYear;
     private TextView textViewDescription;
+    private RecyclerView recyclerViewTrailers;
+    private TrailersAdapter trailersAdapter;
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +61,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         //------------------------ onCreate ------------------------
         viewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
         initViews();
+
+        trailersAdapter = new TrailersAdapter();
+        recyclerViewTrailers.setAdapter(trailersAdapter);
+
         Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
         if (movie != null && movie.getPoster() != null) {
             Glide.with(this)
@@ -58,9 +75,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     .load("https://st.kp.yandex.net/images/no-poster.gif")
                     .into(imageViewPoster);
         }
-//        Glide.with(this)
-//                .load(movie.getPoster().getUrl())
-//                .into(imageViewPoster);
         textViewTitle.setText(movie.getName());
         textViewYear.setText(String.valueOf(movie.getYear()));
         textViewDescription.setText(movie.getDescription());
@@ -69,9 +83,25 @@ public class MovieDetailActivity extends AppCompatActivity {
         viewModel.getTrailers().observe(this, new Observer<List<Trailer>>() {
             @Override
             public void onChanged(List<Trailer> trailers) {
-                Log.d(TAG, trailers.toString());
+                trailersAdapter.setTrailers(trailers);
             }
         });
+
+        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
+            @Override
+            public void onTrailerClick(Trailer trailer) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(trailer.getUrl()));
+                startActivity(intent);
+            }
+        });
+        viewModel.getReviews().observe(this, new Observer<List<Review>>() {
+            @Override
+            public void onChanged(List<Review> reviewList) {
+                Log.d(TAG, reviewList.toString());
+            }
+        });
+        viewModel.loadReviews(movie.getId());
     }
 
 
@@ -80,6 +110,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         textViewTitle = findViewById(R.id.textViewTitle);
         textViewYear = findViewById(R.id.textViewYear);
         textViewDescription = findViewById(R.id.textViewDescription);
+        recyclerViewTrailers = findViewById(R.id.recyclerViewTrailers);
     }
 
     public static Intent newIntent(Context context, Movie movie) {

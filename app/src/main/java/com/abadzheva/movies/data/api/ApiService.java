@@ -1,4 +1,8 @@
-package com.abadzheva.movies;
+package com.abadzheva.movies.data.api;
+
+import com.abadzheva.movies.data.model.movie.MovieResponse;
+import com.abadzheva.movies.data.model.review.ReviewResponse;
+import com.abadzheva.movies.data.model.trailer.TrailerResponse;
 
 import io.reactivex.rxjava3.core.Single;
 import retrofit2.http.GET;
@@ -13,6 +17,9 @@ public interface ApiService {
 
     @GET("movie/{id}?token=GYPN980-J0W41K5-GRS6XZD-MTQSN9W")
     Single<TrailerResponse> loadTrailers(@Path("id") int id);
+
+    @GET("review?token=GYPN980-J0W41K5-GRS6XZD-MTQSN9W&page=1&limit=10")
+    Single<ReviewResponse> loadReviews(@Query("movieId") int movieId);
 }
 
 

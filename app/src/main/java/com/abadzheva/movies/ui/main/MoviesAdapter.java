@@ -1,4 +1,4 @@
-package com.abadzheva.movies;
+package com.abadzheva.movies.ui.main;
 
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.abadzheva.movies.R;
+import com.abadzheva.movies.data.model.movie.Movie;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;

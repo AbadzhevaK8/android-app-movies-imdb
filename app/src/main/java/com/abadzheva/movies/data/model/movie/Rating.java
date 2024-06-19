@@ -1,4 +1,4 @@
-package com.abadzheva.movies;
+package com.abadzheva.movies.data.model.movie;
 
 import com.google.gson.annotations.SerializedName;
 
