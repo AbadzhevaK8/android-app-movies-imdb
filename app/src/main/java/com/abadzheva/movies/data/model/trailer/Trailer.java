@@ -1,13 +1,15 @@
 package com.abadzheva.movies.data.model.trailer;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class Trailer {
 
     @SerializedName("name")
-    private String name;
+    private final String name;
     @SerializedName("url")
-    private String url;
+    private final String url;
 
     public Trailer(String name, String url) {
         this.name = name;
@@ -22,6 +24,7 @@ public class Trailer {
         return url;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Trailer{" +

@@ -6,42 +6,26 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.abadzheva.movies.R;
-import com.abadzheva.movies.data.api.ApiFactory;
 import com.abadzheva.movies.data.model.movie.Movie;
-import com.abadzheva.movies.data.model.movie.MovieResponse;
-import com.abadzheva.movies.data.model.review.Review;
-import com.abadzheva.movies.data.model.review.ReviewResponse;
-import com.abadzheva.movies.data.model.trailer.Trailer;
-import com.abadzheva.movies.data.room.MovieDao;
-import com.abadzheva.movies.data.room.MovieDatabase;
 import com.bumptech.glide.Glide;
-
-import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String EXTRA_MOVIE = "movie";
-    private static final String TAG = "MovieDetailActivity";
 
     private MovieDetailViewModel viewModel;
 
@@ -85,60 +69,40 @@ public class MovieDetailActivity extends AppCompatActivity {
                     .load("https://st.kp.yandex.net/images/no-poster.gif")
                     .into(imageViewPoster);
         }
-        textViewTitle.setText(movie.getName());
-        textViewYear.setText(String.valueOf(movie.getYear()));
-        textViewDescription.setText(movie.getDescription());
+        textViewTitle.setText(movie != null ? movie.getName() : "Name unavailable");
+        textViewYear.setText(movie != null ? String.valueOf(movie.getYear()) : "Year unavailable");
+        textViewDescription.setText(movie != null ? movie.getDescription() : "Text unavailable");
 
-        viewModel.loadTrailers(movie.getId());
-        viewModel.getTrailers().observe(this, new Observer<List<Trailer>>() {
-            @Override
-            public void onChanged(List<Trailer> trailers) {
-                trailersAdapter.setTrailers(trailers);
-            }
-        });
+        if (movie != null) {
+            viewModel.loadTrailers(movie.getId());
+        }
+        viewModel.getTrailers().observe(this, trailers -> trailersAdapter.setTrailers(trailers));
 
-        trailersAdapter.setOnTrailerClickListener(new TrailersAdapter.OnTrailerClickListener() {
-            @Override
-            public void onTrailerClick(Trailer trailer) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(trailer.getUrl()));
-                startActivity(intent);
-            }
+        trailersAdapter.setOnTrailerClickListener(trailer -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(trailer.getUrl()));
+            startActivity(intent);
         });
-        viewModel.getReviews().observe(this, new Observer<List<Review>>() {
-            @Override
-            public void onChanged(List<Review> reviewList) {
-                reviewsAdapter.setReviews(reviewList);
-            }
-        });
-        viewModel.loadReviews(movie.getId());
+        viewModel.getReviews().observe(this, reviewList -> reviewsAdapter.setReviews(reviewList));
+        if (movie != null) {
+            viewModel.loadReviews(movie.getId());
+        }
 
         Drawable favsOff = ContextCompat.getDrawable(MovieDetailActivity.this,
                 R.drawable.ic_favorite_off);
         Drawable favsOn = ContextCompat.getDrawable(MovieDetailActivity.this,
                 R.drawable.ic_favorite_on);
-        viewModel.getFavouriteMovie(movie.getId()).observe(this, new Observer<Movie>() {
-            @Override
-            public void onChanged(Movie movieFromDb) {
+        if (movie != null) {
+            viewModel.getFavouriteMovie(movie.getId()).observe(this, movieFromDb -> {
                 if (movieFromDb == null) {
                     imageViewFavs.setImageDrawable(favsOff);
-                    imageViewFavs.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            viewModel.insertMovie(movie);
-                        }
-                    });
+                    imageViewFavs.setOnClickListener(v -> viewModel.insertMovie(movie));
                 } else {
                     imageViewFavs.setImageDrawable(favsOn);
-                    imageViewFavs.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            viewModel.removeMovie(movie.getId());
-                        }
-                    });
+                    imageViewFavs.setOnClickListener(v -> viewModel.removeMovie(movie.getId()));
                 }
-            }
-        });
+            });
+        }
     }
 
     public void initViews() {
@@ -151,6 +115,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         imageViewFavs = findViewById(R.id.imageViewFavs);
     }
 
+    @NonNull
     public static Intent newIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailActivity.class);
         intent.putExtra(EXTRA_MOVIE, movie);

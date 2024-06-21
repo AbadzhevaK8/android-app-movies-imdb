@@ -1,5 +1,7 @@
 package com.abadzheva.movies.data.model.review;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 public class ReviewResponse {
 
     @SerializedName("docs")
-    private List<Review> reviews;
+    private final List<Review> reviews;
 
     public ReviewResponse(List<Review> reviews) {
         this.reviews = reviews;
@@ -17,6 +19,7 @@ public class ReviewResponse {
         return reviews;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ReviewResponse{" +

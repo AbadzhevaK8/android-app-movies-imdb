@@ -3,31 +3,45 @@ package com.abadzheva.movies.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.abadzheva.movies.ui.detail.MovieDetailActivity;
 import com.abadzheva.movies.R;
-import com.abadzheva.movies.data.model.movie.Movie;
-
-import java.util.List;
+import com.abadzheva.movies.ui.detail.MovieDetailActivity;
+import com.abadzheva.movies.ui.favourite.FavouriteMoviesActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private MainViewModel viewModel;
-    private RecyclerView recyclerViewMovies;
     private ProgressBar progressBarLoading;
     private MoviesAdapter moviesAdapter;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menuFavouriteMovies) {
+            Intent intent = FavouriteMoviesActivity.newIntent(this);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,42 +54,31 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+
         //----------------------- onCreate -----------------------
-        recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
+
+
+        RecyclerView recyclerViewMovies = findViewById(R.id.recyclerViewMovies);
         progressBarLoading = findViewById(R.id.progressBarLoading);
         moviesAdapter = new MoviesAdapter();
         recyclerViewMovies.setAdapter(moviesAdapter);
         recyclerViewMovies.setLayoutManager(new GridLayoutManager(this, 2));
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(List<Movie> movies) {
-                moviesAdapter.setMovies(movies);
-                Log.d(TAG, movies.toString());
-            }
+        viewModel.getMovies().observe(this, movies -> {
+            moviesAdapter.setMovies(movies);
+            Log.d(TAG, movies.toString());
         });
 
-        moviesAdapter.setOnReachEndListener(new MoviesAdapter.OnReachEndListener() {
-            @Override
-            public void onReachEnd() {
-                viewModel.loadMovies();
-            }
+        moviesAdapter.setOnReachEndListener(() -> viewModel.loadMovies());
+        moviesAdapter.setOnMovieClickListener(movie -> {
+            Intent intent = MovieDetailActivity.newIntent(MainActivity.this, movie);
+            startActivity(intent);
         });
-        moviesAdapter.setOnMovieClickListener(new MoviesAdapter.OnMovieClickListener() {
-            @Override
-            public void onMovieClick(Movie movie) {
-                Intent intent = MovieDetailActivity.newIntent(MainActivity.this, movie);
-                startActivity(intent);
-            }
-        });
-        viewModel.getIsLoading().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isLoading) {
-                if (isLoading) {
-                    progressBarLoading.setVisibility(RecyclerView.VISIBLE);
-                } else {
-                    progressBarLoading.setVisibility(RecyclerView.GONE);
-                }
+        viewModel.getIsLoading().observe(this, isLoading -> {
+            if (isLoading) {
+                progressBarLoading.setVisibility(RecyclerView.VISIBLE);
+            } else {
+                progressBarLoading.setVisibility(RecyclerView.GONE);
             }
         });
     }

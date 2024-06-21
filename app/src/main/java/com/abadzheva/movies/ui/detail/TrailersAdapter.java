@@ -43,12 +43,9 @@ public class TrailersAdapter extends RecyclerView.Adapter<TrailersAdapter.Traile
     public void onBindViewHolder(@NonNull TrailersViewHolder holder, int position) {
         Trailer trailer = trailers.get(position);
         holder.textViewTrailerName.setText(trailer.getName());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onTrailerClickListener != null) {
-                    onTrailerClickListener.onTrailerClick(trailer);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (onTrailerClickListener != null) {
+                onTrailerClickListener.onTrailerClick(trailer);
             }
         });
     }

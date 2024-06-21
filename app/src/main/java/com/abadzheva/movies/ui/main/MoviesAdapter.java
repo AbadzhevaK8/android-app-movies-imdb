@@ -64,7 +64,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         double rating = movie.getRating().getImdb();
         int backgroundId;
         if (rating >= 7) {
-            backgroundId = R.drawable.circle_high_raiting;
+            backgroundId = R.drawable.circle_high_rating;
         } else if (rating >= 5) {
             backgroundId = R.drawable.circle_middle_raiting;
         } else {
@@ -78,12 +78,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             onReachEndListener.onReachEnd();
         }
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (onMovieClickListener != null) {
-                    onMovieClickListener.onMovieClick(movie);
-                }
+        holder.itemView.setOnClickListener(v -> {
+            if (onMovieClickListener != null) {
+                onMovieClickListener.onMovieClick(movie);
             }
         });
     }
@@ -98,7 +95,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
         void onReachEnd();
     }
 
-    interface OnMovieClickListener {
+    public interface OnMovieClickListener {
         void  onMovieClick(Movie movie);
     }
 

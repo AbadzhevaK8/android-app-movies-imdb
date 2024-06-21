@@ -1,5 +1,7 @@
 package com.abadzheva.movies.data.model.movie;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -7,7 +9,7 @@ import java.io.Serializable;
 public class Poster implements Serializable {
 
     @SerializedName("url")
-    private String url;
+    private final String url;
 
     public Poster(String url) {
         this.url = url;
@@ -17,6 +19,7 @@ public class Poster implements Serializable {
         return url;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Poster{" +

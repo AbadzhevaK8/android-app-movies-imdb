@@ -1,5 +1,7 @@
 package com.abadzheva.movies.data.model.trailer;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 public class TrailersList {
 
     @SerializedName("trailers")
-    private List<Trailer> trailers;
+    private final List<Trailer> trailers;
 
     public TrailersList(List<Trailer> trailers) {
         this.trailers = trailers;
@@ -17,6 +19,7 @@ public class TrailersList {
         return trailers;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "TrailersList{" +

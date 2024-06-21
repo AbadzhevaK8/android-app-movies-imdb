@@ -1,5 +1,7 @@
 package com.abadzheva.movies.data.model.movie;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -7,7 +9,7 @@ import java.io.Serializable;
 public class Rating implements Serializable {
 
     @SerializedName("imdb")
-    private double imdb;
+    private final double imdb;
 
     public Rating(double imdb) {
         this.imdb = imdb;
@@ -17,6 +19,7 @@ public class Rating implements Serializable {
         return imdb;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Rating{" +

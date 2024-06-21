@@ -1,11 +1,13 @@
 package com.abadzheva.movies.data.model.trailer;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 public class TrailerResponse {
 
     @SerializedName("videos")
-    private TrailersList trailersList;
+    private final TrailersList trailersList;
 
     public TrailerResponse(TrailersList trailersList) {
         this.trailersList = trailersList;
@@ -15,6 +17,7 @@ public class TrailerResponse {
         return trailersList;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "TrailerResponse{" +

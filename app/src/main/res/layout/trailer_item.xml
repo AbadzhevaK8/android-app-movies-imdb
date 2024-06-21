@@ -9,28 +9,15 @@
     app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/textViewTrailerName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/textViewTrailerName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            tools:text="Trailer" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:srcCompat="@drawable/baseline_play_arrow_24" />
-
-
-    </LinearLayout>
+        android:gravity="center_vertical|start"
+        android:padding="8dp"
+        android:drawablePadding="8dp"
+        android:textColor="@color/white"
+        app:drawableEndCompat="@drawable/baseline_play_arrow_24"
+        tools:text="Trailer" />
 
 </androidx.cardview.widget.CardView>

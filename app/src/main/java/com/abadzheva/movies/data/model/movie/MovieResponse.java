@@ -1,5 +1,7 @@
 package com.abadzheva.movies.data.model.movie;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.List;
 public class MovieResponse {
 
     @SerializedName("docs")
-    private List<Movie> movies;
+    private final List<Movie> movies;
 
     public MovieResponse(List<Movie> movies) {
         this.movies = movies;
@@ -17,6 +19,7 @@ public class MovieResponse {
         return movies;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "MovieResponse{" +
